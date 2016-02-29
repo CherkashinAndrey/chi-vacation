@@ -1,0 +1,18 @@
+.login-page-wrapper {
+	background: url('../../../assets/images/bg-body3.jpg') no-repeat;
+	background-size: cover;
+	color: #fff;
+  height: 100vh;
+}
+
+.login-form-wrap{
+	margin-top: 25%;
+	border: 1px solid #fff;
+	border-radius: 4px;
+}
+.login-form-legend{
+	color: #fff;
+}
+.ng-invalid.ng-touched {
+	border: solid red 1px;
+}
