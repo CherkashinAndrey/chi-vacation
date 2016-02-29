@@ -1,4 +1,5 @@
 /*global Firebase: false, $: false*/
+
 export default class firebaseService {
 	constructor ($firebaseObject, $firebase, $firebaseAuth, $q, $rootScope) {
 		'ngInject';
@@ -11,30 +12,9 @@ export default class firebaseService {
 		this.firebaseObj = new Firebase(this.URL);
 		this.authUser = $.jStorage.get(this.userStorageKey) || { status:false, data: false };
 		this.userData = {};
-		this.defaultData = {
-			firstName: '',
-			lastName: '',
-			role: 'user',
-			group: '',
-			phone: '',
-			email: '',
-			uid: '',
-			vacations: {
-				total: 0,
-				dayOff: 0,
-				list: [{
-					id: null,
-					startDate: '',
-					endDate: '',
-					status: '',
-					comments: ''
-				}]
-			}
-		};
 
 	}
 
-	
 	_getClearObj(obj) {
 		let newObj = {};
 		angular.forEach(obj, 
@@ -56,17 +36,14 @@ export default class firebaseService {
 	}
 
 	checkPersmissions(arr) {
-		return !!~arr.indexOf(this.authUser.role || 'anonim') || !arr.length;
+		return !!~arr.indexOf(this.authUser.role || 'anonim');
 	}
 
 	getUsersList() {
 		let arr = this._getClearArray;
 		let deferred = this.$q.defer();
 		this.$firebaseObject( this.firebaseObj ).$loaded(
-			data => {
-				deferred.resolve( arr( data ) );
-				this.$rootScope.$emit('usersLoaded', data);
-			},
+			data =>	deferred.resolve( arr(data) ),
 			error => deferred.reject(error) );
 		return deferred.promise;
 	}
@@ -94,7 +71,7 @@ export default class firebaseService {
 					deferred.reject({status: false, error: error})
 				}
 			}
-			);
+		);
 		return deferred.promise;
 	}
 
@@ -120,25 +97,26 @@ export default class firebaseService {
 	signInUserByEmail(user) {
 		let _this = this;
 		let deferred = _this.$q.defer();
-		_this.firebaseObj.authWithPassword(user, function(error, data) {
+		this.firebaseObj.authWithPassword(user, function(error, data) {
 			if (error === null) {
 				_this.authUser.data = {};
 				_this.authUser.data.uid = data.uid;
-				_this.getUserData().then(function(user){
-					_this.authUser = {
-						status: true,
-						data: data,
-						role: user.role
-					};
-					deferred.resolve(_this.authUser);
-					$.jStorage.set(_this.userStorageKey, _this.authUser);
-				}, signInError)
-				
+				_this.getUserData().then(signInSuccess, signInError)
 			} else {
 				signInError(error);
 			}
 		});
 		return deferred.promise;
+
+		function signInSuccess(data){
+			_this.authUser = {
+				status: true,
+				data: data,
+				role: data.role
+			};
+			deferred.resolve(_this.authUser);
+			$.jStorage.set(_this.userStorageKey, _this.authUser);
+		}
 		
 		function signInError(error){
 			deferred.reject({
@@ -221,4 +199,25 @@ export default class firebaseService {
 	}
 
 }
+
+/*this.defaultData = {
+			firstName: '',
+			lastName: '',
+			role: 'user',
+			group: '',
+			phone: '',
+			email: '',
+			uid: '',
+			vacations: {
+				total: 0,
+				dayOff: 0,
+				list: [{
+					id: null,
+					startDate: '',
+					endDate: '',
+					status: '',
+					comments: ''
+				}]
+			}
+		};*/
 

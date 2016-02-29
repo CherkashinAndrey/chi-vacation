@@ -43,7 +43,7 @@ export default function routerConfig ($stateProvider, $urlRouterProvider) {
 			.state('manager', {
 				url: '/admin',
 				data: {
-					roles: ['Maneger']
+					roles: roles.manager
 				},
 				resolve: {
 					userList : function (firebaseService) {
@@ -51,9 +51,7 @@ export default function routerConfig ($stateProvider, $urlRouterProvider) {
              return firebaseService.getUsersList();
          }
 				},
-				templateUrl: 'app/pages/manegerPage/manegerPage.html',
-				controller: 'ManagerController',
-				controllerAs: 'main'
+				templateUrl: 'app/pages/manegerPage/manegerPage.html'
 			});
 
 $urlRouterProvider.otherwise('/');

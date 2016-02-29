@@ -26,7 +26,6 @@ export default class PermissionService {
         }
 
         this.$rootScope.error = "Seems like you tried accessing a route you don't have access to...";
-        this.toastr.error(this.$rootScope.error); 
         event.preventDefault();
 
         if( fromState.url === '^' ) {

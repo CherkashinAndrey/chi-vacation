@@ -7,7 +7,7 @@ const users = {
 const roles = {
 	admin: [users.admin],
 	anonim : [users.anonim],
-	manager: [users.users, users.manager],
+	manager: [users.manager],
 	user : [users.admin, users.user, users.manager],
 	public: [users.admin, users.user, users.manager, users.anonim]
 }

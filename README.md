@@ -1,5 +1,6 @@
 # chi-vacation
 
-# npm install
+npm install
+bower install
 
-# gulp serve
+ gulp serve
