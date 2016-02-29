@@ -1,16 +1,15 @@
-/* global Firebase:false, jQuery:false */
-
+/*global Firebase: false, $: false*/
 export default class firebaseService {
-	constructor ($firebaseObject, $firebase, $firebaseAuth, $q, $log) {
+	constructor ($firebaseObject, $firebase, $firebaseAuth, $q, $rootScope) {
 		'ngInject';
 		this.URL = 'https://vivid-fire-3850.firebaseio.com/users';
 		this.$firebaseObject = $firebaseObject;
 		this.$firebaseAuth = $firebaseAuth;
 		this.$q = $q;
-		this.$log = $log;
+		this.$rootScope = $rootScope;
 		this.userStorageKey = 'authUser';
 		this.firebaseObj = new Firebase(this.URL);
-		this.authUser = jQuery.jStorage.get(this.userStorageKey) || { status:false, data: false, role: 'anonim' };
+		this.authUser = $.jStorage.get(this.userStorageKey) || { status:false, data: false };
 		this.userData = {};
 		this.defaultData = {
 			firstName: '',
@@ -24,9 +23,10 @@ export default class firebaseService {
 				total: 0,
 				dayOff: 0,
 				list: [{
+					id: null,
 					startDate: '',
 					endDate: '',
-					confirm: false,
+					status: '',
 					comments: ''
 				}]
 			}
@@ -37,13 +37,17 @@ export default class firebaseService {
 	
 	_getClearObj(obj) {
 		let newObj = {};
-		angular.forEach(obj, (value, key) => newObj[key] = value);	
+		angular.forEach(obj, 
+			(value, key) => newObj[key] = value
+		);	
 		return newObj;
 	}
 
 	_getClearArray(arr) {
 		let newArr = [];
-		angular.forEach(arr, value => newArr.push(value));
+		angular.forEach(arr, 
+			(value) => newArr.push(value)
+		);
 		return newArr;
 	}
 
@@ -51,39 +55,39 @@ export default class firebaseService {
 		return this.authUser.data.uid;
 	}
 
-
 	checkPersmissions(arr) {
-		return !!~arr.indexOf(this.authUser.role);
+		return !!~arr.indexOf(this.authUser.role || 'anonim') || !arr.length;
 	}
 
 	getUsersList() {
 		let arr = this._getClearArray;
 		let deferred = this.$q.defer();
-		this.$firebaseObject( this.firebaseObj ).$loaded( 
-				data => deferred.resolve( arr( data ) ),
-				error => deferred.reject(error) );
+		this.$firebaseObject( this.firebaseObj ).$loaded(
+			data => {
+				deferred.resolve( arr( data ) );
+				this.$rootScope.$emit('usersLoaded', data);
+			},
+			error => deferred.reject(error) );
 		return deferred.promise;
 	}
 
 	getUserData() {
-		let _this = this;
-		let deferred = _this.$q.defer();
-		let userRef = _this.firebaseObj.child(_this.authUser.data.uid);
-		_this.$firebaseObject(userRef).$loaded(function(data) {
-			_this.userData = _this._getClearObj(data);
-			deferred.resolve(_this.userData);
-		}, function(error) {
-			deferred.reject(error);
-		});
-		
+		let obj = this._getClearObj;
+		let deferred = this.$q.defer();
+		let userRef = this.firebaseObj.child(this.authUser.data.uid);
+		this.$firebaseObject( userRef ).$loaded(
+			data => {
+				deferred.resolve( obj( data ) );
+				this.$rootScope.$emit('userLoaded', data);
+			},
+			error => deferred.reject(error) );
 		return deferred.promise;
 	}
 
 	updateUserData(id, data) {
 		let deferred = this.$q.defer();
-		let usersRef = this.firebaseObj;
-		usersRef.update({ [id]: data }, 
-			function(error) {
+		this.firebaseObj.update({ [id]: data }, 
+			error => {
 				if (error === null) {
 					deferred.resolve({status: true})
 				} else {
@@ -95,18 +99,14 @@ export default class firebaseService {
 	}
 
 	createUserByEmail(newUser) {
-		let _this = this;
-		let deferred = _this.$q.defer();
-		_this.firebaseObj.createUser({
+		let deferred = this.$q.defer();
+		this.firebaseObj.createUser({
 			email    : newUser.email,
 			password : newUser.password
-		}, function(error, userData) {
+		}, (error, userData) => {
 			if (error === null) {
-				_this.$log.debug('created user with uid', userData.uid);
-				let user = angular.extend(_this.defaultData, newUser, {uid: userData.uid});
-				deferred.resolve(
-					_this.updateUserData(userData.uid, user)
-					)
+				let user = angular.extend(this.defaultData, newUser, {uid: userData.uid});
+				deferred.resolve(this.updateUserData(userData.uid, user))
 			} else {
 				deferred.reject({
 					status: false,
@@ -117,7 +117,6 @@ export default class firebaseService {
 		return deferred.promise;
 	}
 	
-
 	signInUserByEmail(user) {
 		let _this = this;
 		let deferred = _this.$q.defer();
@@ -132,7 +131,7 @@ export default class firebaseService {
 						role: user.role
 					};
 					deferred.resolve(_this.authUser);
-					jQuery.jStorage.set(_this.userStorageKey, _this.authUser);
+					$.jStorage.set(_this.userStorageKey, _this.authUser);
 				}, signInError)
 				
 			} else {
@@ -150,14 +149,12 @@ export default class firebaseService {
 		}
 	}
 
-
 	deleteUser(email, password) {
-		let _this = this;
-		let deferred = _this.$q.defer();
-		_this.firebaseObj.removeUser({
+		let deferred = this.$q.defer();
+		this.firebaseObj.removeUser({
 			email    : email,
 			password : password
-		}, function(error) {
+		}, error => {
 			if (error === null) {
 				deferred.resolve({status: true});
 			} else {
@@ -170,71 +167,58 @@ export default class firebaseService {
 		return deferred.promise;
 	}
 
-
 	getUserState() {
-		let _this = this;
-		if (_this.authUser.data) {
-			let data = _this.firebaseObj.getAuth();
-			_this.authUser = {
+		if (this.authUser.data) {
+			let data = this.firebaseObj.getAuth();
+			this.authUser = {
 				status: data ? true : false,
 				data: (data == null) ? {} : data,
 				role: this.authUser.role
 			};
-			jQuery.jStorage.set(_this.userStorageKey, _this.authUser);
+			$.jStorage.set(this.userStorageKey, this.authUser);
 		}
-		return _this.authUser.status;
+		return this.authUser.status;
 	}
-
 
 	logOut() {
-		let _this = this;
-		_this.$firebaseAuth(_this.firebaseObj).$unauth();
-		jQuery.jStorage.deleteKey(_this.userStorageKey);
-		this.authUser = { status:false, data: false, role: 'anonim' };
+		this.$firebaseAuth(this.firebaseObj).$unauth();
+		$.jStorage.deleteKey(this.userStorageKey);
+		this.authUser = {status: false, data: false}
 	}
-
 
 	getAuthUser() {
 		return this.authUser.data;
 	}
 
-
 	changeUserPass(email, oldPassword, newPassword) {
-		let _this = this;
-		let deferred = _this.$q.defer();
-		_this.firebaseObj.changePassword({
+		let deferred = this.$q.defer();
+		this.firebaseObj.changePassword({
 			email       : email,
 			oldPassword : oldPassword,
 			newPassword : newPassword
-		}, function(error) {
+		}, error => {
 			if (error === null) {
 				deferred.resolve({status: true});
-				_this.$log.debug("Password changed successfully");
 			} else {
 				deferred.reject({status: false, error: error});
-				_this.$log.debug("Error changing password:", error);
 			}
 		});
 		return deferred.promise;
 	}
 	
 	resetAndSendPassword(email) {
-		let _this = this;
-		let deferred = _this.$q.defer();
-		_this.firebaseObj.resetPassword({
+		let deferred = this.$q.defer();
+		this.firebaseObj.resetPassword({
 			email : email
-		}, function(error) {
+		}, error => {
 			if (error === null) {
 				deferred.resolve({status: true});
-				_this.$log.debug("Password reset email sent successfully");
 			} else {
 				deferred.reject({status: false, error: error});
-				_this.$log.debug("Error sending password reset email:", error);
 			}
 		});
 		return deferred.promise;
 	}
-	
 
 }
 

@@ -1,5 +1,5 @@
 export default class VvController {
-  constructor (managerFirebaseService, $scope) {
+  constructor (firebaseService, $scope) {
     'ngInject';
 
     this.oneThing = [];
@@ -7,7 +7,7 @@ export default class VvController {
     this.userName = [];
     var temp = [];
     this.classAnimation = '';
-    this.activate(managerFirebaseService);
+    this.activate(firebaseService);
     this.calendarView = 'month';
     this.calendarDay = new Date();
     this.$scope =  $scope;
@@ -42,9 +42,9 @@ export default class VvController {
       }]
   }
 
-  activate(managerFirebaseService) {
+  activate(firebaseService) {
     var _this = this;
-    managerFirebaseService.getUsersList().then( d => {debugger;
+    firebaseService.getUsersList().then( d => {debugger;
       _this.awesomeThings = d;
     });
   }
