@@ -19,6 +19,12 @@ export default function routerConfig ($stateProvider, $urlRouterProvider) {
 				templateUrl: 'app/pages/user/userPage.html',
 				data: {
 					roles: roles.user
+				},
+				resolve: {
+					user : function (firebaseService) {
+						'ngIngect'
+             return firebaseService.getUserData();
+         }
 				}
 			})
 			.state('admin', {
@@ -26,12 +32,24 @@ export default function routerConfig ($stateProvider, $urlRouterProvider) {
 				templateUrl: 'app/pages/admin/vv.html',
 				data: {
 					roles: roles.admin
+				},
+				resolve: {
+					userList : function (firebaseService) {
+						'ngIngect'
+             return firebaseService.getUsersList();
+         }
 				}
 			})
 			.state('manager', {
 				url: '/admin',
 				data: {
 					roles: ['Maneger']
+				},
+				resolve: {
+					userList : function (firebaseService) {
+						'ngIngect'
+             return firebaseService.getUsersList();
+         }
 				},
 				templateUrl: 'app/pages/manegerPage/manegerPage.html',
 				controller: 'ManagerController',

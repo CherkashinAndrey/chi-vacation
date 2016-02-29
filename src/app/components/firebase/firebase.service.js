@@ -37,16 +37,13 @@ export default class firebaseService {
 	
 	_getClearObj(obj) {
 		let newObj = {};
-		angular.forEach(obj, function(value, key) {
-			newObj[key] = value;
-		});	
+		angular.forEach(obj, (value, key) => newObj[key] = value);	
 		return newObj;
 	}
+
 	_getClearArray(arr) {
 		let newArr = [];
-		angular.forEach(arr, function(value) {
-			newArr.push(value);
-		});
+		angular.forEach(arr, value => newArr.push(value));
 		return newArr;
 	}
 
@@ -60,11 +57,10 @@ export default class firebaseService {
 	}
 
 	getUsersList() {
-		let _this = this;
+		let arr = this._getClearArray;
 		let deferred = this.$q.defer();
-		let usersRef = _this.firebaseObj;
-		_this.$firebaseObject(usersRef).$loaded( 
-				data => deferred.resolve( _this._getClearArray( data ) ),
+		this.$firebaseObject( this.firebaseObj ).$loaded( 
+				data => deferred.resolve( arr( data ) ),
 				error => deferred.reject(error) );
 		return deferred.promise;
 	}
@@ -84,9 +80,8 @@ export default class firebaseService {
 	}
 
 	updateUserData(id, data) {
-		let _this = this;
-		let deferred = _this.$q.defer();
-		let usersRef = _this.firebaseObj;
+		let deferred = this.$q.defer();
+		let usersRef = this.firebaseObj;
 		usersRef.update({ [id]: data }, 
 			function(error) {
 				if (error === null) {
