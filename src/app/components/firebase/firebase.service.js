@@ -1,3 +1,4 @@
+/*global Firebase: false, $: false*/
 export default class firebaseService {
 	constructor ($firebaseObject, $firebase, $firebaseAuth, $q, $rootScope) {
 		'ngInject';
@@ -45,7 +46,7 @@ export default class firebaseService {
 	_getClearArray(arr) {
 		let newArr = [];
 		angular.forEach(arr, 
-			(value, key) => newArr.push(value)
+			(value) => newArr.push(value)
 		);
 		return newArr;
 	}
