@@ -6,6 +6,7 @@ export default class LoginController {
      this.$log = $log;
      this.toastr = toastr;
      this.$scope = $scope;
+     this.sending = false;
      this.firebaseService = firebaseService;
   }
 
@@ -14,13 +15,17 @@ export default class LoginController {
       this.toastr.warning('fill all fild');
       return
     }
+    this.sending = true;
     let _this = this;
-     this.firebaseService.signInUserByEmail({email: this.email,password: this.passw}).then( () => {
+    this.firebaseService.signInUserByEmail({
+      email: this.email,
+      password: this.passw
+    }).then( () => {
         _this.$state.go('home');
-     })
-     .catch( err => {
+    }).catch( err => {
       _this.$log.error(err);
-     });
+      _this.sending = false;
+    });
   }
   
 }

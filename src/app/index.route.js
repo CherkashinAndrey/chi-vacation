@@ -11,7 +11,7 @@ export default function routerConfig ($stateProvider, $urlRouterProvider) {
 				controller: 'LoginController',
 				controllerAs: 'main',
 				data: {
-					roles: roles.public
+					roles: roles.anonim
 				}
 			})
 			.state('home', {

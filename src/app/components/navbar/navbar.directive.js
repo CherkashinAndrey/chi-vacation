@@ -14,19 +14,22 @@ export default function NavbarDirective() {
 }
 
 class NavbarController {
-  constructor (firebaseService) {
+  constructor (firebaseService, $rootScope, $scope) {
     'ngInject';
     this.firebaseService = firebaseService;
-    this.user = {
-      role: 'admin',
-      firstName: 'Vasya',
-      lastName: 'Ivanov',
-      uid: 'asdas'
-    };
+    this.user = {};
+    this.activate($rootScope, $scope);
+  }
+
+  activate($rootScope, $scope) {
+    let destr = $rootScope.$on('userLoaded',
+                  (ev, user) => this.user = user );
+    $scope.$on('destroy', destr);
   }
 
   logOut() {
     this.firebaseService.logOut();
+    this.user = {};
   }
 
 }
