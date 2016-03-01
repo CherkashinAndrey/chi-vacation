@@ -1,5 +1,5 @@
 export default class UserController {
-  constructor ($scope, $log, firebaseService, moment) {
+  constructor ($scope, $log, firebaseService, moment, user) {
     'ngInject';
     $scope.startDate = new Date();
     $scope.minStartDate = new Date();
@@ -22,7 +22,7 @@ export default class UserController {
 
     };
 
-    this.user = firebaseService.getUserData();
+    this.user = user;
     this.log = $log;
     this.submitHandler = function (startDate, endDate) {
       if ($scope.userForm.$invalid) return;

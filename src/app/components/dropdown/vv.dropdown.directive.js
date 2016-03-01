@@ -24,7 +24,7 @@ export default function dropdownListDirective() {
                 '  </div>'+
                 '</div>',
 
-        link: function(scope, el, attr){
+        link: function(scope){
 
             scope.chooseItem = function( item ){
               scope.obj = item;

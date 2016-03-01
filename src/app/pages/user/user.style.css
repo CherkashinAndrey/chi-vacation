@@ -1,5 +1,6 @@
 .user-wrapper {
 	background: url('../../../assets/images/bg-body3.jpg') no-repeat;
+	background-size: cover;
 	height: 95vh;
 }
 .user-form {

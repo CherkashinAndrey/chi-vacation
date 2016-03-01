@@ -61,10 +61,6 @@ export default class firebaseService {
 		return deferred.promise;
 	}
 
-	getUserData() {
-		return this.userData;
-	}
-
 	updateUserData(data) {
 		let deferred = this.$q.defer();
 		this.firebaseObj.update({ [data.uid]: this.$firebaseUtils.toJSON(data) }, 

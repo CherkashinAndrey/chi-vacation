@@ -4,6 +4,7 @@ const users = {
 	manager: 'manager',
 	anonim: 'anonim'
 }
+
 const roles = {
 	admin: [users.admin],
 	anonim : [users.anonim],
@@ -12,5 +13,38 @@ const roles = {
 	public: [users.admin, users.user, users.manager, users.anonim]
 }
 
+const ations = {
+   userLoaded: 'userLoaded'
+}
 
-export { roles }
+const groups = [
+   '.Net',
+   'Android',
+   'Business Analyst',
+   'Data Bases',
+   'Design',
+   'HR',
+   'iOS',
+   'IT',
+   'Java',
+   'JavaScript',
+   'Managers',
+   'Marketing Manager',
+   'Markup',
+   'NodeJS',
+   'Operations',
+   'PHP',
+   'Python',
+   'QA', 
+   'Ruby',
+   'Sales'
+  ];
+
+const routeStates = {
+   login : 'login',
+   home: 'home',
+   admin: 'admin',
+   manager: 'manager'
+}
+
+export { groups, roles, ations, routeStates }

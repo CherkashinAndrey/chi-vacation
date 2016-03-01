@@ -20,9 +20,9 @@ export default class VvController {
     var _this = this;
 
     _this.events = [];
-    angular.forEach(this.awesomeThings, function(value, key){
+    angular.forEach(this.awesomeThings, function(value){
 
-      if (value.vacations === undefined) {
+      if ( !('vacations' in value) ) {
         return
       }else 
       {
