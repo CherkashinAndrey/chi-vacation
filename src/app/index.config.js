@@ -6,6 +6,6 @@ export default function config ($logProvider, toastrConfig) {
   toastrConfig.allowHtml = true;
   toastrConfig.timeOut = 2000;
   toastrConfig.positionClass = 'toast-top-right';
-  toastrConfig.progressBar = true; 
+  toastrConfig.progressBar = true;
 
 }
