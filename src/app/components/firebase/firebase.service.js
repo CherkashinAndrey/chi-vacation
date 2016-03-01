@@ -1,7 +1,7 @@
 /*global Firebase: false, $: false*/
 
 export default class firebaseService {
-	constructor ($firebaseObject, $firebase, $firebaseAuth, $q, $rootScope) {
+	constructor ($firebaseObject, $firebase, $firebaseAuth, $q, $rootScope, $firebaseUtils) {
 		'ngInject';
 		this.URL = 'https://vivid-fire-3850.firebaseio.com/users';
 		this.$firebaseObject = $firebaseObject;
@@ -12,6 +12,7 @@ export default class firebaseService {
 		this.firebaseObj = new Firebase( this.URL );
 		this.authUser = $.jStorage.get( this.userStorageKey ) || { status:false, data: false };
 		this.userData = {};
+		this.$firebaseUtils = $firebaseUtils;
 	}
 
 	_getClearObj(obj) {
@@ -64,9 +65,9 @@ export default class firebaseService {
 		return this.userData;
 	}
 
-	updateUserData(id, data) {
+	updateUserData(data) {
 		let deferred = this.$q.defer();
-		this.firebaseObj.update({ [id]: data }, 
+		this.firebaseObj.update({ [data.uid]: this.$firebaseUtils.toJSON(data) }, 
 			error => {
 				if (error === null) {
 					deferred.resolve({status: true})
