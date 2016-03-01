@@ -40,7 +40,9 @@ export default function routerConfig ($stateProvider, $urlRouterProvider) {
                         'ngIngect'
              return firebaseService.getUsersList();
          }
-                }
+                },
+                controller: 'VvController',
+				controllerAs: 'vv'
             })
             .state('manager', {
                 url: '/admin',
