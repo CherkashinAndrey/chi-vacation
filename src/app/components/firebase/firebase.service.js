@@ -9,10 +9,9 @@ export default class firebaseService {
 		this.$q = $q;
 		this.$rootScope = $rootScope;
 		this.userStorageKey = 'authUser';
-		this.firebaseObj = new Firebase(this.URL);
-		this.authUser = $.jStorage.get(this.userStorageKey) || { status:false, data: false };
+		this.firebaseObj = new Firebase( this.URL );
+		this.authUser = $.jStorage.get( this.userStorageKey ) || { status:false, data: false };
 		this.userData = {};
-
 	}
 
 	_getClearObj(obj) {
@@ -26,7 +25,7 @@ export default class firebaseService {
 	_getClearArray(arr) {
 		let newArr = [];
 		angular.forEach(arr, 
-			(value) => newArr.push(value)
+			value => newArr.push(value)
 		);
 		return newArr;
 	}
@@ -48,7 +47,7 @@ export default class firebaseService {
 		return deferred.promise;
 	}
 
-	getUserData() {
+	loadUser() {
 		let obj = this._getClearObj;
 		let deferred = this.$q.defer();
 		let userRef = this.firebaseObj.child(this.authUser.data.uid);
@@ -59,6 +58,10 @@ export default class firebaseService {
 			},
 			error => deferred.reject(error) );
 		return deferred.promise;
+	}
+
+	getUserData() {
+		return this.userData;
 	}
 
 	updateUserData(id, data) {
@@ -101,7 +104,7 @@ export default class firebaseService {
 			if (error === null) {
 				_this.authUser.data = {};
 				_this.authUser.data.uid = data.uid;
-				_this.getUserData().then(signInSuccess, signInError)
+				_this.loadUser().then(signInSuccess, signInError)
 			} else {
 				signInError(error);
 			}
@@ -114,6 +117,7 @@ export default class firebaseService {
 				data: data,
 				role: data.role
 			};
+			_this.userData = data;
 			deferred.resolve(_this.authUser);
 			$.jStorage.set(_this.userStorageKey, _this.authUser);
 		}
