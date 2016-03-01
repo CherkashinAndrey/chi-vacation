@@ -1,0 +1,111 @@
+<div class="container">
+
+  <div>
+    <acme-navbar creation-date="vv.creationDate"></acme-navbar>
+  </div>
+
+  <div class="jumbotron text-center">
+    <h2 ng-model="vv.oneThing.name"> {{vv.oneThing.lastName}} {{vv.oneThing.firstName}} </h2>
+    <div class="row">
+    Total:<input type="text" value="{{vv.oneThing.vacations.total}}" readonly="">
+    DayOff: <input type="text" value="{{vv.oneThing.vacations.dayOff}}" readonly="">  
+    </div>
+  </div>
+
+  <div class="row col-md-3">
+<!--  <img class="pull-right" ng-src="assets/images/{{ awesomeThing.logo }}" alt="{{ awesomeThing.title }}"> -->
+
+<!--       <ul ng-repeat="awesomeThing in vv.awesomeThings ">
+        <li>{{awesomeThing.name}}</li>
+      </ul>
+ -->
+      <dropdown-list-directive data-items-list="vv.awesomeThings" data-placeholder="asdadsasdas" data-show-events="vv.events" data-obj="vv.oneThing">
+      </dropdown-list-directive> 
+  </div>
+
+
+      <div class="row col-md-9">
+
+        <br class="visible-xs visible-sm">
+
+        <h2 class="text-center">{{ vv.calendarTitle }}</h2>
+
+        <div class="row">
+
+          <div class="col-md-6 text-center">
+            <div class="btn-group">
+              <button
+                class="btn btn-primary"
+                mwl-date-modifier
+                date="vv.calendarDay"
+                decrement="vv.calendarView">
+                Previous
+              </button>
+              <button
+                class="btn btn-default"
+                mwl-date-modifier
+                date="vv.calendarDay"
+                set-to-today>
+                Today
+              </button>
+              <button
+                class="btn btn-primary"
+                mwl-date-modifier
+                date="vv.calendarDay"
+                increment="vv.calendarView">
+                Next
+              </button>
+            </div>
+          </div>
+
+          <br class="visible-xs visible-sm">
+
+          <div class="col-md-6 text-center">
+            <div class="btn-group">
+              <label class="btn btn-primary" ng-model="vv.calendarView" btn-radio="'year'">Year</label>
+              <label class="btn btn-primary" ng-model="vv.calendarView" btn-radio="'month'">Month</label>
+              <label class="btn btn-primary" ng-model="vv.calendarView" btn-radio="'week'">Week</label>
+              <label class="btn btn-primary" ng-model="vv.calendarView" btn-radio="'day'">Day</label>
+            </div>
+          </div>
+
+        </div>
+
+        <!--           
+          <div class="col-md-6 text-center">
+            <div class="btn-group">
+              <label class="btn btn-primary" ng-model="vv.calendarView" btn-radio="'year'">Year</label>
+              <label class="btn btn-primary" ng-model="vv.calendarView" btn-radio="'month'">Month</label>
+              <label class="btn btn-primary" ng-model="vv.calendarView" btn-radio="'week'">Week</label>
+              <label class="btn btn-primary" ng-model="vv.calendarView" btn-radio="'day'">Day</label>
+
+              <label class="btn btn-primary"  ng-click="vv.showEvents1()">test</label>
+            </div>
+          </div> -->
+
+        </div>
+      <div class="col-md-9 col-md-offset-3">
+        <mwl-calendar
+            view="vv.calendarView"
+            current-day="vv.calendarDay"
+            events="vv.events"
+            view-title="vv.calendarTitle"
+            auto-open="true"
+            day-view-start="06:00"
+          day-view-end="22:00"
+          day-view-split="30">
+        </mwl-calendar>
+      </div>
+
+<!--     <mwl-calendar
+        events="vv.events"
+        view="vv.calendarView"
+        view-title="vv.calendarTitle"
+        current-day="vv.calendarDay"
+        auto-open="true"
+        day-view-start="06:00"
+        day-view-end="22:00"
+        day-view-split="30">
+        on-event-times-changed="vv.eventTimesChanged(calendarEvent); calendarEvent.startsAt = calendarNewEventStart; calendarEvent.endsAt = calendarNewEventEnd"
+    </mwl-calendar> -->
+   </div> 
