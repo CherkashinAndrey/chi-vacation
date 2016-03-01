@@ -23,7 +23,7 @@ export default function routerConfig ($stateProvider, $urlRouterProvider) {
 				resolve: {
 					user : function (firebaseService) {
 						'ngIngect'
-             return firebaseService.getUserData();
+             return firebaseService.loadUser();
          }
 				}
 			})
@@ -51,7 +51,7 @@ export default function routerConfig ($stateProvider, $urlRouterProvider) {
              return firebaseService.getUsersList();
          }
 				},
-				templateUrl: 'app/pages/manegerPage/manegerPage.html'
+				templateUrl: 'app/pages/managerPage/managerPage.html'
 			});
 
 $urlRouterProvider.otherwise('/');

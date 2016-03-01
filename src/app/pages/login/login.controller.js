@@ -12,7 +12,7 @@ export default class LoginController {
 
   signin () {
     if(this.$scope.loginForm.$invalid) {
-      this.toastr.warning('fill all fild');
+      this.toastr.warning('Fieldes hasn\'t be empty!');
       return
     }
     this.sending = true;
@@ -23,6 +23,7 @@ export default class LoginController {
     }).then( () => {
         _this.$state.go('home');
     }).catch( err => {
+      _this.toastr.error(err.error.message, err.error.code);
       _this.$log.error(err);
       _this.sending = false;
     });
