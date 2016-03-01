@@ -25,7 +25,7 @@ export default function routerConfig ($stateProvider, $urlRouterProvider) {
                 resolve: {
                     user : function (firebaseService) {
                         'ngIngect'
-                        return firebaseService.getUserData();
+                        return firebaseService.loadUser();
                     }
                 }
             })
